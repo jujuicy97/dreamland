@@ -114,7 +114,7 @@ const getParkingStatus = (remaining) => {
             <Parking className="parking-icon" />
             <div className="date-info">
               <p>{formatted}</p>
-              <h3>드림랜드 실시간 주차 현황</h3>
+              <h3>드림랜드 실시간 주차 현황 테스트</h3>
             </div>
           </div>
           <div className="right">
