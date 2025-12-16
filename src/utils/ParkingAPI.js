@@ -329,7 +329,6 @@ export const registerReservation = async ({
     startTime,
     endTime
 })=>{
-    console.log({ userID, parkareaID, selectDate, startTime, endTime });
 
     // // 중복된 자리 확인
     // const { data:existing } = await supabase
