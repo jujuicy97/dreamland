@@ -13,7 +13,7 @@ export const fetchLogin = async (userID,password)=>{
         .select('*')
         .eq('user_id',userID)
         .eq('password',password)
-        .single();
+        // .single();
     return {data,error};
 }
 
@@ -63,7 +63,7 @@ export const findUserId = async (username,phone)=>{
         .select('user_id')
         .eq('name',username)
         .eq('phone',phone)
-        .single();
+        // .single();
     return {data,error};
 }
 
@@ -78,7 +78,7 @@ export const findInfo = async (username,phone,userID)=>{
         .eq('name',username)
         .eq('phone',phone)
         .eq('user_id',userID)
-        .single();
+        // .single();
     return {data,error};
 }
 
@@ -329,6 +329,8 @@ export const registerReservation = async ({
     startTime,
     endTime
 })=>{
+    console.log({ userID, parkareaID, selectDate, startTime, endTime });
+
     // // 중복된 자리 확인
     // const { data:existing } = await supabase
     //     .from('reservations')
@@ -340,7 +342,7 @@ export const registerReservation = async ({
     //     return { data: null, error:new Error("이미 예약된 자리입니다")};
     // }
     //reservations에 추가
-    const { error } = await supabase
+    const { data,error } = await supabase
         .from('reservations')
         .insert([{
             user_id:userID,
@@ -349,7 +351,9 @@ export const registerReservation = async ({
             start_time:startTime,
             end_time:endTime
         }])
-    return {error};
+        .select()
+        .single();
+    return {data, error};
 }
 
 // 결제 테이블 등록하기
@@ -361,11 +365,12 @@ export const payReserve = async (userID,parkareaID,amount)=>{
         .eq('parkarea_id',parkareaID)
         .eq('status','active')
         .order('created_at', {ascending:false}) // 가장 최신항목
-        .limit(1); // 한개만 가져오기
+        .limit(1) // 한개만 가져오기
+        .maybeSingle();
     if(reserveError){
         return {data:false,error:reserveError};
     }
-    const reserveID = reserveData[0].id;
+    const reserveID = reserveData.id;   // 객체에서 바로 .id
     const { data,error } = await supabase
         .from('payments')
         .insert([{

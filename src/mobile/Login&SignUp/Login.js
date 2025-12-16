@@ -13,15 +13,40 @@ const Login = () => {
     const handleLogin = async (e)=>{
         e.preventDefault();
         const {data,error} = await fetchLogin(userID,userPw);
-        if(error){
+        // if(error){
+        //     setPopUp(true);
+        // }
+        // if(data){ 
+        //     saveUserInfo(data);
+        //     navigate("/");
+        //     window.location.reload();
+            
+        // }
+        if (error) {
             setPopUp(true);
-        }
-        if(data){ 
-            saveUserInfo(data);
+            return;
+          }
+        
+          // data가 배열 형태로 올 것을 고려
+          if (data && data.length > 0) {
+            const user = data[0]; // 첫 번째 유저 객체만 사용
+        
+            // 필요한 정보만 뽑아서 저장
+            saveUserInfo({
+              id: user.id,          // PK
+              user_id: user.user_id,
+              name: user.name,
+              phone: user.phone,
+              car: user.car,
+              yearly_pass: user.yearly_pass,
+            });
+        
             navigate("/");
             window.location.reload();
-            
-        }
+          } else {
+            // 일치하는 회원 없음
+            setPopUp(true);
+          }
     }
     return (
         <div id="login-page">
